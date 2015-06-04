@@ -26,10 +26,13 @@ gulp.task('compile', function() {
 ##### locale
 
 Type: `string`
+
 Values: see [messageformatjs `locale` option](https://github.com/SlexAxton/messageformat.js)
 
 ##### module
 
 Type: `string`
+
 Values: {'commonJS', ''}
+
 Default: ''
