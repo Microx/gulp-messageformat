@@ -69,18 +69,28 @@ module.exports = function (options) {
 	}
 
 	function flush(cb) {
+		var result = '';
+
 		if(!resultFile) {
 			cb();
 			return;
 		}
 
-		var result = [
-			'(function(g){',
-			'var ' + options.namespace + ' = ' + mf.functions() + ';',
-			parsedFile.join(EOL),
-			'return g["' + options.namespace + '"] = ' + options.namespace + ';',
-			'})(' + options.global + ');'
-		].join(EOL);
+		if (options.module === 'commonJS') {
+			result = [
+				'var ' + options.namespace + ' = ' + mf.functions() + ';',
+				parsedFile.join(EOL),
+				'module.exports = ' + options.namespace + ';'
+			].join(EOL);
+		} else {
+			result = [
+				'(function(g){',
+				'var ' + options.namespace + ' = ' + mf.functions() + ';',
+				parsedFile.join(EOL),
+				'return g["' + options.namespace + '"] = ' + options.namespace + ';',
+				'})(' + options.global + ');'
+			].join(EOL);
+		}
 
 		resultFile.contents = new Buffer(result);
 
