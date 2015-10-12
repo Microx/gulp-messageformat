@@ -8,6 +8,9 @@
     "type": "git",
     "url": "https://github.com/Microx/gulp-messageformat.git"
   },
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org/"
+  },
   "keywords": [
     "Gulp", "Messageformat"
   ],
