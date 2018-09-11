@@ -17,7 +17,7 @@ var messageFormat = require('gulp-messageformat');
 
 gulp.task('compile', function() {
   gulp.src('src/**/*.json')
-    .pipe(messageFormat({locale:'en'}))
+    .pipe(messageFormat({ locale:'en' }))
     .pipe(gulp.dest('dist/');
 });
 ```
@@ -27,12 +27,14 @@ gulp.task('compile', function() {
 
 Type: `string`
 
+Default: 'en'
+
 Values: see [messageformatjs `locale` option](https://github.com/SlexAxton/messageformat.js)
 
-##### module
+##### namespace
 
-Type: `string`
+Type: `?string`
 
-Values: {'commonJS', ''}
+Values: {'module.exports', null}
 
-Default: ''
+Default: 'i18n'

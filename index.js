@@ -1,25 +1,22 @@
-var gutil = require('gulp-util');
-var path = require('path');
-var MessageFormat = require('messageformat');
-var	EOL = require('os').EOL;
-var through = require('through2');
-
+const Vinyl = require('vinyl');
+const PluginError = require('plugin-error');
+const path = require('path');
+const MessageFormat = require('messageformat');
+const EOL = require('os').EOL;
+const through = require('through2');
 
 module.exports = function (options) {
-
-	var parsedFile = [];
-	var resultFile;
+	let  messages = {};
+	let resultFile = null;
 
 	options = options || {};
 
 	if (!options.locale) {
-		throw new gutil.PluginError('gulp-messageformat', 'Options `locale` is required.');
+		throw new PluginError('gulp-messageformat', 'Options `locale` is required.');
 	}
 
 	options.namespace = options.namespace || 'i18n';
-	options.global = options.global || 'this';
-
-	var mf = new MessageFormat(options.locale.trim(), false, options.namespace);
+	const mf = new MessageFormat(options.locale.trim());
 
 	function parse(file, encoding, next) {
 
@@ -30,7 +27,7 @@ module.exports = function (options) {
 		}
 
 		if (file.isStream()) {
-			next(new gutil.PluginError('gulp-messageformat', 'Streaming not supported' ,{
+			next(new PluginError('gulp-messageformat', 'Streaming not supported' ,{
 				fileName: file.path,
 				showStack: false
 			}));
@@ -38,7 +35,7 @@ module.exports = function (options) {
 		}
 
 		if (!resultFile) {
-			resultFile = new gutil.File({
+			resultFile = new Vinyl({
 				path: path.join(file.base, options.locale + '.js'),
 				base: file.base,
 				cwd: file.cwd,
@@ -47,9 +44,9 @@ module.exports = function (options) {
 		}
 
 		try {
+			let input = JSON.parse(file.contents.toString());
 			var fileName = path.basename(file.path, path.extname(file.path));
-			var parsed = options.namespace+'["'+fileName+'"] = '+mf.precompileObject(JSON.parse(file.contents.toString())) + ';';
-			parsedFile.push(parsed);
+			Object.assign(messages, { [fileName]: input });
 		} catch (errs) {
 			var message = '';
 
@@ -59,7 +56,7 @@ module.exports = function (options) {
 				message = errs.name + ': ' +  errs.message + '. File: ' + file.relative;
 			}
 
-			this.emit('error', new gutil.PluginError('gulp-messageformat', message, {
+			this.emit('error', new PluginError('gulp-messageformat', message, {
 				fileName: file.path,
 				showStack: false
 			}));
@@ -69,29 +66,12 @@ module.exports = function (options) {
 	}
 
 	function flush(cb) {
-		var result = '';
-
 		if(!resultFile) {
 			cb();
 			return;
 		}
 
-		if (options.module === 'commonJS') {
-			result = [
-				'var ' + options.namespace + ' = ' + mf.functions() + ';',
-				parsedFile.join(EOL),
-				'module.exports = ' + options.namespace + ';'
-			].join(EOL);
-		} else {
-			result = [
-				'(function(g){',
-				'var ' + options.namespace + ' = ' + mf.functions() + ';',
-				parsedFile.join(EOL),
-				'return g["' + options.namespace + '"] = ' + options.namespace + ';',
-				'})(' + options.global + ');'
-			].join(EOL);
-		}
-
+		let result = mf.compile(messages).toString(options.namespace);
 		resultFile.contents = new Buffer(result);
 
 		this.push(resultFile);

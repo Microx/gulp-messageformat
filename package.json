@@ -1,24 +1,26 @@
 {
-	"name": "gulp-messageformat",
-	"version": "0.0.10",
-	"description": "Gulp plugin for messageformat",
-	"main": "index.js",
-	"scripts": {},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Microx/gulp-messageformat.git"
-	},
-	"publishConfig": {
-		"registry": "http://registry.npmjs.org/"
-	},
-	"keywords": [
-    "Gulp", "Messageformat"
-  ],
-	"author": "Miroslav Jancarik <jancarikmiroslav@gmail.com>",
-	"license": "Apache License, Version 2.0",
-	"dependencies": {
-		"gulp-util": "^3.0.6",
-		"messageformat": "^0.2.2",
-		"through2": "^0.6.5"
-	}
+    "name": "gulp-messageformat",
+    "version": "0.1.0",
+    "description": "Gulp plugin for messageformat",
+    "main": "index.js",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Microx/gulp-messageformat.git"
+    },
+    "publishConfig": {
+        "registry": "http://registry.npmjs.org/"
+    },
+    "keywords": [
+        "Gulp",
+        "Messageformat"
+    ],
+    "author": "Miroslav Jancarik <jancarikmiroslav@gmail.com>",
+    "license": "Apache License, Version 2.0",
+    "dependencies": {
+        "messageformat": "^2.0.4",
+        "plugin-error": "^1.0.1",
+        "through2": "^2.0.3",
+        "vinyl": "^2.2.0"
+    }
 }
